@@ -1,13 +1,110 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 
 info:
-  title: API Title
-  version: '1.0'
+  title: Incident Ticket System API
+  version: "1.0.0"
 
 servers:
   - url: https://api.server.test/v1
 
-paths:
+paths: {}
 
 components:
   schemas:
+    Employee:
+      description: An employee.
+      type: object
+      properties:
+        name:
+          description: Employee name.
+          type: string
+        id:
+          description: System-assigned employee ID.
+          type: integer
+        jobTitle:
+          description: Text description of job title.
+          type: string
+        jobLevel:
+          description: Job title level for use in auto-severity assignment.
+          type: integer
+        email:
+          description: Employee email.
+          type: string
+        location:
+          description: Text description of location.
+          type: string
+        admin:
+          description: If employee has admin privledges for system.
+          type: boolean
+        password:
+          description: Employee's password for accessing system APIs.
+          type: string
+          format: password
+
+    Ticket:
+      description: A ticket.
+      type: object
+      properties:
+        # identification metadata
+        title:
+          description: User-submitted name for ticket.
+          type: string
+        id:
+          description: System assigned ID for ticket.
+          type: integer
+        creationDate:
+          description: Date ticket was created.
+          type: string
+          format: date-time
+
+        # ticket description
+        type:
+          description: Type of issue report.
+          type: string
+          enum:
+            - incident-report
+            - maintenance
+        impactedSystems:
+          description: List of system names issue applies to.
+          type: array
+          items:
+            type: string
+        description:
+          description: User-submitted description of the issue.
+          type: string
+        stepsTaken:
+          description: Description field to be filled with actions taken by ticket resolvers.
+          type: string
+        comments:
+          description: Comments that don't fit in other description fields.
+          type: string
+
+        # severity information
+        userSeverity:
+          description: Severity level assigned by ticket submitter.
+          type: integer
+        adminSeverity:
+          description: Severtity level assigned by admin.
+          type: integer
+
+        # status values
+        status:
+          description: Text status of this ticket.
+          type: string
+        opened:
+          description: Open/closed state of ticket.
+          type: boolean
+        lastUpdateTime:
+          description: Last time this ticket was updated.
+          type: string
+          format: date-time
+
+        # employee related values
+        creator:
+          description: ID of employee who submitted this ticket.
+          type: integer
+        assignedEmployees:
+          description: List of employee IDs that have been assigned to resolve this ticket.
+          type: array
+          items:
+            type: integer
