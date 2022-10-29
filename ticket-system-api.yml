@@ -7,7 +7,57 @@ info:
 servers:
   - url: https://api.server.test/v1
 
-paths: {}
+paths:
+  /create-ticket:
+    post:
+      summary: Create a ticket.
+      requestBody:
+        description: Information to create a ticket.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketCreateRequest"
+      responses:
+        200:
+          description: Created a ticket. Returns the ID of the created ticket.
+          content:
+            text/plain:
+              schema:
+                description: ID of created ticket.
+                type: integer
+                example: 10
+
+  /update-ticket/{id}:
+    put:
+      summary: Update a ticket.
+      description: >
+        Update a ticket by providing new fields to an existing ticket. Users are able to provide
+        a new value for every field in the ticket, but some fields can only be updated
+        by Admins.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to update with new fields.
+          required: true
+          schema:
+            type: integer
+            example: 10
+      requestBody:
+        description: Update to the ticket.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ticket2"
+      responses:
+        200:
+          description: Successfully updated ticket.
+          content:
+            text/plain:
+              schema:
+                description: Success text.
+                type: string
 
 components:
   schemas:
@@ -42,20 +92,14 @@ components:
           format: password
 
     Ticket:
-      description: A ticket.
+      description: A ticket as submitted by a user.
       type: object
       properties:
         # identification metadata
         title:
           description: User-submitted name for ticket.
+          example: can't log in
           type: string
-        id:
-          description: System assigned ID for ticket.
-          type: integer
-        creationDate:
-          description: Date ticket was created.
-          type: string
-          format: date-time
 
         # ticket description
         type:
@@ -66,14 +110,15 @@ components:
             - maintenance
         impactedSystems:
           description: List of system names issue applies to.
+          example:
+            - server1
+            - server2
           type: array
           items:
             type: string
         description:
           description: User-submitted description of the issue.
-          type: string
-        stepsTaken:
-          description: Description field to be filled with actions taken by ticket resolvers.
+          example: can't log in, just hangs
           type: string
         comments:
           description: Comments that don't fit in other description fields.
@@ -82,29 +127,68 @@ components:
         # severity information
         userSeverity:
           description: Severity level assigned by ticket submitter.
+          example: 2
           type: integer
-        adminSeverity:
-          description: Severtity level assigned by admin.
-          type: integer
-
-        # status values
-        status:
-          description: Text status of this ticket.
-          type: string
-        opened:
-          description: Open/closed state of ticket.
-          type: boolean
-        lastUpdateTime:
-          description: Last time this ticket was updated.
-          type: string
-          format: date-time
 
         # employee related values
         creator:
           description: ID of employee who submitted this ticket.
+          example: 12
           type: integer
-        assignedEmployees:
-          description: List of employee IDs that have been assigned to resolve this ticket.
-          type: array
-          items:
-            type: integer
+
+    Ticket2:
+      description: A ticket as it should exist in the Database. Includes additional fields.
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Ticket"
+        - type: object
+          properties:
+            # identification metadata
+            id:
+              description: System assigned ID for ticket.
+              type: integer
+            creationDate:
+              description: Date ticket was created.
+              type: string
+              format: date-time
+
+            # ticket description
+            stepsTaken:
+              description: Description field to be filled with actions taken by ticket resolvers.
+              type: string
+
+            # severity information
+            adminSeverity:
+              description: Severtity level assigned by admin.
+              type: integer
+
+            # status values
+            status:
+              description: Text status of this ticket.
+              type: string
+            opened:
+              description: Open/closed state of ticket.
+              type: boolean
+            lastUpdateTime:
+              description: Last time this ticket was updated.
+              type: string
+              format: date-time
+
+            # employee related values
+            assignedEmployees:
+              description: List of employee IDs that have been assigned to resolve this ticket.
+              type: array
+              items:
+                type: integer
+
+    TicketCreateRequest:
+      description: >
+        Ticket with required fields. Represents required fields for user to create a ticket.
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Ticket"
+        - type: object
+          required:
+            - title
+            - type
+            - creator
