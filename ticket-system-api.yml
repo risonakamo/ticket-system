@@ -24,9 +24,7 @@ paths:
           content:
             text/plain:
               schema:
-                description: ID of created ticket.
                 type: integer
-                example: 10
 
   /tickets/update/{id}:
     put:
@@ -37,8 +35,8 @@ paths:
         by Admins.
       parameters:
         - name: id
-          in: path
           description: ID of ticket to update with new fields.
+          in: path
           required: true
           schema:
             type: integer
@@ -56,14 +54,116 @@ paths:
           content:
             text/plain:
               schema:
-                description: Success text.
                 type: string
 
-  /tickets/{id}: {}
+  /tickets/{id}:
+    get:
+      summary: Retrieve a single ticket.
+      description: >
+        Try to get a single ticket. User needs to provide login details, and API will only work
+        if user is allowed to access the target ticket. Normal users are able to get a ticket if
+        they created the ticket or the ticket was assigned to them. Admins are able to get any
+        ticket.
+      parameters:
+        - name: id
+          description: Id of ticket to retrieve.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved ticket. Returns the ticket. Depending on authentication provided,
+            only certain fields of the returned ticket will be visible.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
 
-  /tickets: {}
-  /tickets/created/{id}: {}
-  /tickets/assigned/{id}: {}
+  /tickets:
+    get:
+      summary: Get all tickets.
+      description: >
+        Attempt to get all tickets in the system. Only admins allowed to get all tickets. Must
+        provide admin authentication details
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully got all tickets. Returns all tickets in a list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets/created/{id}:
+    get:
+      summary: Get all tickets created by some employee.
+      description: >
+        Attempt to get all tickets owned by a certain employee. Must provide
+        authentication details. Only able to get all tickets of some employee if user is admin,
+        or the requesting employee is the same as the ID requested (employee is requesting all of their
+        own tickets).
+      parameters:
+        - name: id
+          description: Target employee ID to retrieve all tickets of.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved all tickets created by a certain employee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets/assigned/{id}:
+    get:
+      summary: Get all tickets assigned to some employee.
+      description: >
+        Attempt to get all tickets assigned to a target employee. Affected by user authentication.
+        User is only able to retrieve tickets that have been assigned to them (user authentication
+        must match with the ID requested). Admins can perform action on any ID.
+      parameters:
+        - name: id
+          description: Target employee ID to retrieve all tickets of.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved all tickets assigned to a certain employee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
 
 components:
   schemas:
@@ -218,3 +318,35 @@ components:
             Ticket update details. Updater can attempt to replace any field, however some fields
             are only allowed to be updated by admins.
           $ref: "#/components/schemas/Ticket2"
+
+    UserAuth:
+      description: >
+        Authentication details to determine if user has suitable permissions to access some
+        resource.
+      type: object
+      properties:
+        employeeId:
+          description: ID of employee attempting to perform action.
+          type: integer
+        password:
+          description: Password of employee to verify identity.
+          type: string
+          format: password
+
+  requestBodies:
+    UserAuthBody:
+      description: User must provide authentication details.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserAuth"
+
+  responses:
+    UserUnauthorised:
+      description: >
+        Unauthorised to access requested resource.
+      content:
+        text/plain:
+          schema:
+            type: string
