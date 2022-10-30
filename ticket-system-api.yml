@@ -8,7 +8,7 @@ servers:
   - url: https://api.server.test/v1
 
 paths:
-  /create-ticket:
+  /tickets/create:
     post:
       summary: Create a ticket.
       requestBody:
@@ -28,7 +28,7 @@ paths:
                 type: integer
                 example: 10
 
-  /update-ticket/{id}:
+  /tickets/update/{id}:
     put:
       summary: Update a ticket.
       description: >
@@ -49,7 +49,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Ticket2"
+              $ref: "#/components/schemas/TicketUpdateRequest"
       responses:
         200:
           description: Successfully updated ticket.
@@ -58,6 +58,12 @@ paths:
               schema:
                 description: Success text.
                 type: string
+
+  /tickets/{id}: {}
+
+  /tickets: {}
+  /tickets/created/{id}: {}
+  /tickets/assigned/{id}: {}
 
 components:
   schemas:
@@ -192,3 +198,23 @@ components:
             - title
             - type
             - creator
+
+    TicketUpdateRequest:
+      description: >
+        Request to update a ticket. Includes identifying information for the user attempting
+        to perform an update. Regular users are only allowed to update tickets if they own the
+        ticket, or they were assigned to the ticket. Admins can update any ticket.
+      type: object
+      properties:
+        employeeId:
+          description: ID of the employee performing an update.
+          type: integer
+        password:
+          description: Password of the employee to verify identity.
+          type: string
+          format: password
+        updateTicket:
+          description: >
+            Ticket update details. Updater can attempt to replace any field, however some fields
+            are only allowed to be updated by admins.
+          $ref: "#/components/schemas/Ticket2"
