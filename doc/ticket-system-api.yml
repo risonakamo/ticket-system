@@ -237,7 +237,7 @@ components:
           type: integer
 
         # employee related values
-        creator:
+        creatorId:
           description: ID of employee who submitted this ticket.
           example: 12
           type: integer
@@ -264,7 +264,7 @@ components:
               type: string
 
             # severity information
-            adminSeverity:
+            severity:
               description: Severtity level assigned by admin.
               type: integer
 
@@ -297,7 +297,7 @@ components:
           required:
             - title
             - type
-            - creator
+            - creatorId
 
     TicketUpdateRequest:
       description: >
