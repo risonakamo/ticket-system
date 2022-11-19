@@ -116,6 +116,21 @@ paths:
               schema:
                 $ref: "#/components/schemas/OwnTickets"
 
+  /tickets/get-owned/{id}:
+    get:
+      summary: Get tickets owned by a specific employee
+      description: >
+        Get all tickets created by and assigned to a particular employee, specified by ID. Can
+        only be used as admin.
+      responses:
+        200:
+          description: >
+            Retrieved tickets owned by particular employee.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnTickets"
+
 components:
   schemas:
     Employee:
