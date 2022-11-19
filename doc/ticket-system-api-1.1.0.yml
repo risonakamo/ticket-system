@@ -32,7 +32,8 @@ paths:
       description: >
         Update a ticket by providing new fields to an existing ticket. Users are able to provide
         a new value for every field in the ticket, but some fields can only be updated
-        by Admins.
+        by Admins. Affected by authorisation - user must be logged in and can only update a ticket
+        that is owned by them.
       parameters:
         - name: id
           description: ID of ticket to update with new fields.
@@ -47,7 +48,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TicketUpdateRequest"
+              $ref: "#/components/schemas/Ticket2"
       responses:
         200:
           description: Successfully updated ticket.
@@ -60,10 +61,8 @@ paths:
     get:
       summary: Retrieve a single ticket.
       description: >
-        Try to get a single ticket. User needs to provide login details, and API will only work
-        if user is allowed to access the target ticket. Normal users are able to get a ticket if
-        they created the ticket or the ticket was assigned to them. Admins are able to get any
-        ticket.
+        Try to get a single ticket. Affected by user authorisation - user must have performed login
+        and must be allowed to access the specified ticket.
       parameters:
         - name: id
           description: Id of ticket to retrieve.
@@ -71,8 +70,6 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/UserAuthBody"
       responses:
         200:
           description: >
@@ -91,71 +88,10 @@ paths:
       description: >
         Attempt to get all tickets in the system. Only admins allowed to get all tickets. Must
         provide admin authentication details
-      requestBody:
-        $ref: "#/components/requestBodies/UserAuthBody"
       responses:
         200:
           description: >
             Successfully got all tickets. Returns all tickets in a list.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Ticket2"
-        401:
-          $ref: "#/components/responses/UserUnauthorised"
-
-  /tickets/created/{id}:
-    get:
-      summary: Get all tickets created by some employee.
-      description: >
-        Attempt to get all tickets owned by a certain employee. Must provide
-        authentication details. Only able to get all tickets of some employee if user is admin,
-        or the requesting employee is the same as the ID requested (employee is requesting all of their
-        own tickets).
-      parameters:
-        - name: id
-          description: Target employee ID to retrieve all tickets of.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/UserAuthBody"
-      responses:
-        200:
-          description: >
-            Successfully retrieved all tickets created by a certain employee.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Ticket2"
-        401:
-          $ref: "#/components/responses/UserUnauthorised"
-
-  /tickets/assigned/{id}:
-    get:
-      summary: Get all tickets assigned to some employee.
-      description: >
-        Attempt to get all tickets assigned to a target employee. Affected by user authentication.
-        User is only able to retrieve tickets that have been assigned to them (user authentication
-        must match with the ID requested). Admins can perform action on any ID.
-      parameters:
-        - name: id
-          description: Target employee ID to retrieve all tickets of.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/UserAuthBody"
-      responses:
-        200:
-          description: >
-            Successfully retrieved all tickets assigned to a certain employee.
           content:
             application/json:
               schema:
@@ -357,13 +293,12 @@ components:
           description: Tickets created by the employee
           type: array
           items:
-            $ref: "#/components/schemas/TicketUnion"
-
+            $ref: "#/components/schemas/Ticket2"
         assigned:
           description: Tickets assigned to the employee.
           type: array
           items:
-            $ref: "#/components/schemas/TicketUnion"
+            $ref: "#/components/schemas/Ticket2"
 
     TicketUnion:
       description: >
