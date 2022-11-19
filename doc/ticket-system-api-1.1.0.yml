@@ -1,0 +1,393 @@
+openapi: "3.0.2"
+
+info:
+  title: Incident Ticket System API
+  version: "1.0.0"
+
+servers:
+  - url: https://api.server.test/v1
+
+paths:
+  /tickets/create:
+    post:
+      summary: Create a ticket.
+      requestBody:
+        description: Information to create a ticket.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketCreateRequest"
+      responses:
+        200:
+          description: Created a ticket. Returns the ID of the created ticket.
+          content:
+            text/plain:
+              schema:
+                type: integer
+
+  /tickets/update/{id}:
+    put:
+      summary: Update a ticket.
+      description: >
+        Update a ticket by providing new fields to an existing ticket. Users are able to provide
+        a new value for every field in the ticket, but some fields can only be updated
+        by Admins.
+      parameters:
+        - name: id
+          description: ID of ticket to update with new fields.
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 10
+      requestBody:
+        description: Update to the ticket.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketUpdateRequest"
+      responses:
+        200:
+          description: Successfully updated ticket.
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /tickets/{id}:
+    get:
+      summary: Retrieve a single ticket.
+      description: >
+        Try to get a single ticket. User needs to provide login details, and API will only work
+        if user is allowed to access the target ticket. Normal users are able to get a ticket if
+        they created the ticket or the ticket was assigned to them. Admins are able to get any
+        ticket.
+      parameters:
+        - name: id
+          description: Id of ticket to retrieve.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved ticket. Returns the ticket. Depending on authentication provided,
+            only certain fields of the returned ticket will be visible.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets:
+    get:
+      summary: Get all tickets.
+      description: >
+        Attempt to get all tickets in the system. Only admins allowed to get all tickets. Must
+        provide admin authentication details
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully got all tickets. Returns all tickets in a list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets/created/{id}:
+    get:
+      summary: Get all tickets created by some employee.
+      description: >
+        Attempt to get all tickets owned by a certain employee. Must provide
+        authentication details. Only able to get all tickets of some employee if user is admin,
+        or the requesting employee is the same as the ID requested (employee is requesting all of their
+        own tickets).
+      parameters:
+        - name: id
+          description: Target employee ID to retrieve all tickets of.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved all tickets created by a certain employee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets/assigned/{id}:
+    get:
+      summary: Get all tickets assigned to some employee.
+      description: >
+        Attempt to get all tickets assigned to a target employee. Affected by user authentication.
+        User is only able to retrieve tickets that have been assigned to them (user authentication
+        must match with the ID requested). Admins can perform action on any ID.
+      parameters:
+        - name: id
+          description: Target employee ID to retrieve all tickets of.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/UserAuthBody"
+      responses:
+        200:
+          description: >
+            Successfully retrieved all tickets assigned to a certain employee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket2"
+        401:
+          $ref: "#/components/responses/UserUnauthorised"
+
+  /tickets/get-owned:
+    get:
+      summary: Get tickets assigned and owned by yourself
+      description: >
+        Get all tickets that have been created or assigned by a certain user, identified by
+        login information.
+      responses:
+        200:
+          description: >
+            Successfully retrieved all tickets assigned and created by some employee.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnTickets"
+
+components:
+  schemas:
+    Employee:
+      description: An employee.
+      type: object
+      properties:
+        name:
+          description: Employee name.
+          type: string
+        id:
+          description: System-assigned employee ID.
+          type: integer
+        jobTitle:
+          description: Text description of job title.
+          type: string
+        jobLevel:
+          description: Job title level for use in auto-severity assignment.
+          type: integer
+        email:
+          description: Employee email.
+          type: string
+        location:
+          description: Text description of location.
+          type: string
+        admin:
+          description: If employee has admin privledges for system.
+          type: boolean
+        password:
+          description: Employee's password for accessing system APIs.
+          type: string
+          format: password
+
+    Ticket:
+      description: A ticket as submitted by a user.
+      type: object
+      properties:
+        # identification metadata
+        title:
+          description: User-submitted name for ticket.
+          example: can't log in
+          type: string
+
+        # ticket description
+        type:
+          description: Type of issue report.
+          type: string
+          enum:
+            - incident-report
+            - maintenance
+        impactedSystems:
+          description: List of system names issue applies to.
+          example:
+            - server1
+            - server2
+          type: array
+          items:
+            type: string
+        description:
+          description: User-submitted description of the issue.
+          example: can't log in, just hangs
+          type: string
+        comments:
+          description: Comments that don't fit in other description fields.
+          type: string
+
+        # severity information
+        userSeverity:
+          description: Severity level assigned by ticket submitter.
+          example: 2
+          type: integer
+
+        # employee related values
+        creatorId:
+          description: ID of employee who submitted this ticket.
+          example: 12
+          type: integer
+
+    Ticket2:
+      description: A ticket as it should exist in the Database. Includes additional fields.
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Ticket"
+        - type: object
+          properties:
+            # identification metadata
+            id:
+              description: System assigned ID for ticket.
+              type: integer
+            creationDate:
+              description: Date ticket was created.
+              type: string
+              format: date-time
+
+            # ticket description
+            stepsTaken:
+              description: Description field to be filled with actions taken by ticket resolvers.
+              type: string
+
+            # severity information
+            severity:
+              description: Severtity level assigned by admin.
+              type: integer
+
+            # status values
+            status:
+              description: Text status of this ticket.
+              type: string
+            opened:
+              description: Open/closed state of ticket.
+              type: boolean
+            lastUpdateTime:
+              description: Last time this ticket was updated.
+              type: string
+              format: date-time
+
+            # employee related values
+            assignedEmployees:
+              description: List of employee IDs that have been assigned to resolve this ticket.
+              type: array
+              items:
+                type: integer
+
+    TicketCreateRequest:
+      description: >
+        Ticket with required fields. Represents required fields for user to create a ticket.
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Ticket"
+        - type: object
+          required:
+            - title
+            - type
+            - creatorId
+
+    TicketUpdateRequest:
+      description: >
+        Request to update a ticket. Includes identifying information for the user attempting
+        to perform an update. Regular users are only allowed to update tickets if they own the
+        ticket, or they were assigned to the ticket. Admins can update any ticket.
+      type: object
+      properties:
+        employeeId:
+          description: ID of the employee performing an update.
+          type: integer
+        password:
+          description: Password of the employee to verify identity.
+          type: string
+          format: password
+        updateTicket:
+          description: >
+            Ticket update details. Updater can attempt to replace any field, however some fields
+            are only allowed to be updated by admins.
+          $ref: "#/components/schemas/Ticket2"
+
+    UserAuth:
+      description: >
+        Authentication details to determine if user has suitable permissions to access some
+        resource.
+      type: object
+      properties:
+        employeeId:
+          description: ID of employee attempting to perform action.
+          type: integer
+        password:
+          description: Password of employee to verify identity.
+          type: string
+          format: password
+
+    OwnTickets:
+      description: >
+        Wrapper of tickets including tickets owned and assigned to an employee.
+      type: object
+      properties:
+        created:
+          description: Tickets created by the employee
+          type: array
+          items:
+            $ref: "#/components/schemas/TicketUnion"
+
+        assigned:
+          description: Tickets assigned to the employee.
+          type: array
+          items:
+            $ref: "#/components/schemas/TicketUnion"
+
+    TicketUnion:
+      description: >
+        A ticket. Can either be the limited ticket or the full ticket only visible to admins.
+      type: array
+      items:
+        oneOf:
+          - $ref: "#/components/schemas/Ticket"
+          - $ref: "#/components/schemas/Ticket2"
+
+  requestBodies:
+    UserAuthBody:
+      description: User must provide authentication details.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserAuth"
+
+  responses:
+    UserUnauthorised:
+      description: >
+        Unauthorised to access requested resource.
+      content:
+        text/plain:
+          schema:
+            type: string
