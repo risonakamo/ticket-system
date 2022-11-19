@@ -16,5 +16,5 @@ public class Ticket
     public String comments;
 
     // severity information
-    public Integer userSeverity;
+    public UserSeverity userSeverity;
 }
