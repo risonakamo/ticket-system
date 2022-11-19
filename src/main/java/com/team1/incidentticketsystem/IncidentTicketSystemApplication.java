@@ -8,6 +8,7 @@ public class IncidentTicketSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(IncidentTicketSystemApplication.class, args);
+		System.out.println("running");
 	}
 
 }
