@@ -17,4 +17,29 @@ public class Ticket
 
     // severity information
     public UserSeverity userSeverity;
+
+    public Ticket()
+    {
+
+    }
+
+    /** create a ticket with all required fields */
+    public Ticket(
+        String title,
+        Integer creatorId,
+        TicketType type,
+        List<String> impactedSystems,
+        String description,
+        String comments,
+        UserSeverity severity
+    )
+    {
+        this.title=title;
+        this.creatorId=creatorId;
+        this.type=type;
+        this.impactedSystems=impactedSystems;
+        this.description=description;
+        this.comments=comments;
+        this.userSeverity=severity;
+    }
 }
