@@ -11,11 +11,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /** full ticket with all fields */
 @Entity
+@TypeDef(
+    name="list",
+    typeClass=ListArrayType.class
+)
 public class Ticket2 extends Ticket
 {
     @Id
@@ -37,11 +46,9 @@ public class Ticket2 extends Ticket
     public Boolean opened;
 
     // other
-    @Type(type="list-array")
-    @Column(
-        columnDefinition="integer[]"
-    )
-    public List<Integer> assignedEmployees;
+    @Type(type="list")
+    @Column(columnDefinition="uuid[]")
+    public List<UUID> assignedEmployees;
 
     public Ticket2()
     {
@@ -73,6 +80,12 @@ public class Ticket2 extends Ticket
         this.status="created";
         this.opened=true;
 
-        this.assignedEmployees=new ArrayList<Integer>();
+        this.assignedEmployees=new ArrayList<UUID>();
+    }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
