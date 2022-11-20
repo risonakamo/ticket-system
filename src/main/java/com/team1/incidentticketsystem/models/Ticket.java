@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.Type;
 
 /** partial ticket that user is able to fill out */
+@MappedSuperclass
 public class Ticket
 {
     // indentification info

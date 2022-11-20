@@ -1,20 +1,37 @@
 package com.team1.incidentticketsystem.services;
 
 import com.team1.incidentticketsystem.models.UserSeverity;
-import com.team1.incidentticketsystem.models.Ticket2;
 
+import org.springframework.stereotype.Component;
+
+import com.team1.incidentticketsystem.models.Employee;
+import com.team1.incidentticketsystem.models.Ticket2;
+import com.team1.incidentticketsystem.models.Ticket;
+
+@Component
 public class SeverityService
 {
-    /** compute a severity based on employee level and the given user severity */
-    Integer employeeLevelScaledSeverity(Ticket2 ticket)
+    /** callable compute severity. ideally can take configuration information to choose the severity
+     *  calculation function */
+    public Integer computeSeverity(Ticket ticket,Employee creator)
     {
-        return this.userSeverityToInt(ticket.userSeverity);
+        return this.employeeLevelScaledSeverity(ticket,creator);
+        // return this.nonScaledSeverity(ticket,creator);
+    }
+
+    /** compute a severity based on employee level and the given user severity */
+    Integer employeeLevelScaledSeverity(Ticket ticket,Employee creator)
+    {
+        return (
+            this.userSeverityToInt(ticket.userSeverity)
+            *this.employeeLevelToMultiplier(creator.jobLevel)
+        );
     }
 
     /** no scaling applied to severity */
-    Integer nonScaledSeverity(Ticket2 ticket)
+    Integer nonScaledSeverity(Ticket ticket,Employee creator)
     {
-        return 1;
+        return this.userSeverityToInt(ticket.userSeverity);
     }
 
     /** convert employee level into a multipler */

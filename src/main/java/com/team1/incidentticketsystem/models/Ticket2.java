@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -56,7 +57,7 @@ public class Ticket2 extends Ticket
     }
 
     /** construct ticket2 from ticket1 */
-    public Ticket2(Ticket ticket)
+    public Ticket2(Ticket ticket,Integer severity)
     {
         // copy all ticket values
         this.title=ticket.title;
@@ -75,8 +76,7 @@ public class Ticket2 extends Ticket
         this.lastUpdateTime=nowtime;
 
         this.stepsTaken="";
-        // todo: compute auto severity
-        this.severity=0;
+        this.severity=severity;
         this.status="created";
         this.opened=true;
 
