@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
+import com.github.javafaker.Faker;
 import com.team1.incidentticketsystem.models.Employee;
 import com.team1.incidentticketsystem.models.Ticket;
 import com.team1.incidentticketsystem.models.Ticket2;
@@ -64,6 +65,20 @@ public class IndexController
         );
 
         this.employeeRepository.save(employee);
+
+        Faker faker=new Faker();
+        Employee employee2=new Employee(
+            faker.name().firstName(),
+            faker.name().lastName(),
+            faker.job().title(),
+            faker.random().nextInt(1,5),
+            faker.internet().emailAddress(),
+            faker.address().fullAddress(),
+            false,
+            faker.internet().password()
+        );
+
+        this.employeeRepository.save(employee2);
 
         return ResponseEntity.ok("hello");
     }
