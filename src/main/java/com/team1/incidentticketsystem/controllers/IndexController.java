@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +40,12 @@ public class IndexController
     public ResponseEntity<String> index()
     {
         return ResponseEntity.ok("hello");
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test(@RequestHeader("testthing") String testparam)
+    {
+        System.out.println("got param: "+testparam);
+        return ResponseEntity.ok("hello2");
     }
 }
