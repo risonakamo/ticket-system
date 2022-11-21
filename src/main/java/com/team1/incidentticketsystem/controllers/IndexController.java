@@ -38,18 +38,6 @@ public class IndexController
     @GetMapping("/")
     public ResponseEntity<String> index()
     {
-        Ticket ticket=new Ticket(
-            "new test",
-            UUID.fromString("9c3c86ec-ec8a-4640-a7c3-6ceea40e37cd"),
-            TicketType.INCIDENT_REPORT,
-            new ArrayList<>(),
-            "hello test",
-            "asdaiosdjofosaidfos jsa dfijsa df",
-            UserSeverity.NORMAL
-        );
-
-        this.ticketService.createTicket(ticket);
-
         return ResponseEntity.ok("hello");
     }
 }
