@@ -23,6 +23,7 @@ extends OncePerRequestFilter
     throws ServletException,IOException
     {
         System.out.println("filter trigger");
+        request.setAttribute("huh","something");
 
         filterChain.doFilter(request,response);
     }

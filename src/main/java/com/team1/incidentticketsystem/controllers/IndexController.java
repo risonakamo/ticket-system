@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,8 @@ import com.team1.incidentticketsystem.services.TicketService;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/")
 public class IndexController
@@ -37,8 +40,9 @@ public class IndexController
     TicketService ticketService;
 
     @GetMapping("/")
-    public ResponseEntity<String> index()
+    public ResponseEntity<String> index(@RequestAttribute("huh") String thing)
     {
+        System.out.println("got arg "+thing);
         return ResponseEntity.ok("hello");
     }
 
