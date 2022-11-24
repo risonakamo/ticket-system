@@ -1,7 +1,10 @@
 package com.team1.incidentticketsystem.services;
 
+import java.lang.StackWalker.Option;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.StreamSupport;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,5 +54,50 @@ public class TicketService
         this.ticketRepository.save(newTicket);
 
         return Optional.of(newTicket.id);
+    }
+
+    /** given a ticket, find it and update it in the database. provide the relevant permissions the
+     *  update should be executed with */
+    public void updateTicket(Ticket2 ticket,boolean admin,boolean assignedEmployee)
+    throws Exception
+    {
+        if (ticket.id==null)
+        {
+            System.out.println("did not provide ticket id");
+            throw new Exception("did not provide ticket id");
+        }
+
+        Optional<Ticket2> foundTicket=this.ticketRepository.findById(ticket.id);
+
+        if (!foundTicket.isPresent())
+        {
+            System.out.print("could not find ticket with id: "+ticket.id);
+            throw new Exception("could not find ticket");
+        }
+
+        foundTicket.get().update(ticket,admin,assignedEmployee);
+
+        this.ticketRepository.save(foundTicket.get());
+    }
+
+    /** get a ticket by ticket id */
+    public Ticket2 getTicket(UUID ticketId)
+    throws Exception
+    {
+        Optional<Ticket2> foundticket=this.ticketRepository.findById(ticketId);
+
+        if (!foundticket.isPresent())
+        {
+            System.out.println("could not find ticket: "+ticketId);
+            throw new Exception("could not find ticket");
+        }
+
+        return foundticket.get();
+    }
+
+    /** return all tickets */
+    public List<Ticket2> getAllTickets()
+    {
+        return this.ticketRepository.findAll();
     }
 }
