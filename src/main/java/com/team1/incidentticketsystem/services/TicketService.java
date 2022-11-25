@@ -100,4 +100,10 @@ public class TicketService
     {
         return this.ticketRepository.findAll();
     }
+
+    /** get tickets "owned" by target employee */
+    public List<Ticket2> getOwnedTickets(UUID employeeId)
+    {
+        return this.ticketRepository.findOwnedTickets(employeeId);
+    }
 }

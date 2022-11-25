@@ -43,6 +43,11 @@ public class IndexController
     public ResponseEntity<String> index(@RequestAttribute("huh") String thing)
     {
         System.out.println("got arg "+thing);
+
+        System.out.println(this.ticketRepository.findOwnedTickets(
+            UUID.fromString("9c3c86ec-ec8a-4640-a7c3-6ceea40e37cd")
+        ));
+
         return ResponseEntity.ok("hello");
     }
 
