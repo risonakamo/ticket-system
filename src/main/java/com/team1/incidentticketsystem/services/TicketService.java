@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.team1.incidentticketsystem.models.Employee;
+import com.team1.incidentticketsystem.models.OwnedTickets;
 import com.team1.incidentticketsystem.models.Ticket;
 import com.team1.incidentticketsystem.models.Ticket2;
 import com.team1.incidentticketsystem.repositories.EmployeeRepository;
 import com.team1.incidentticketsystem.repositories.TicketRepository;
+import com.team1.incidentticketsystem.models.OwnedTickets;
 
 @Component
 public class TicketService
@@ -102,8 +104,11 @@ public class TicketService
     }
 
     /** get tickets "owned" by target employee */
-    public List<Ticket2> getOwnedTickets(UUID employeeId)
+    public OwnedTickets getOwnedTickets(UUID employeeId)
     {
-        return this.ticketRepository.findOwnedTickets(employeeId);
+        List<Ticket2> createdTickets=this.ticketRepository.findByCreatorId(employeeId);
+        List<Ticket2> assignedTickets=this.ticketRepository.findAssignedTickets(employeeId);
+
+        return new OwnedTickets(createdTickets,assignedTickets);
     }
 }

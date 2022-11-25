@@ -27,4 +27,14 @@ public interface TicketRepository extends CrudRepository<Ticket2,UUID>
         nativeQuery=true
     )
     List<Ticket2> findOwnedTickets(UUID employeeId);
+
+    List<Ticket2> findByCreatorId(UUID creatorId);
+
+    @Query(value="""
+        select * from ticket2
+        where :employeeId = any(ticket2.assigned_employees)
+    """,
+    nativeQuery=true
+    )
+    List<Ticket2> findAssignedTickets(UUID employeeId);
 }

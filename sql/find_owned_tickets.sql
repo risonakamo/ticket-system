@@ -14,3 +14,6 @@ select * from ticket2
 where
     creator_id = :employeeId
     or :employeeId =any(ticket2.assigned_employees)
+
+select * from ticket2
+where :employeeId = any(ticket2.assigned_employees)
