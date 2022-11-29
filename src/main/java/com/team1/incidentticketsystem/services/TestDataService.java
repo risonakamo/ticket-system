@@ -3,6 +3,7 @@ package com.team1.incidentticketsystem.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.ldap.userdetails.LdapUserDetails;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
@@ -16,7 +17,7 @@ public class TestDataService
     @Autowired
     EmployeeRepository employeeRepository;
 
-    /** create admin employee. does nothing if already exists */
+        /** create admin employee. does nothing if already exists */
     public void addAdmin()
     {
         Optional<List<Employee>> foundadmin=this.employeeRepository.findByEmail(
