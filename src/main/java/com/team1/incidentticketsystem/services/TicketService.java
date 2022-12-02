@@ -83,18 +83,17 @@ public class TicketService
     }
 
     /** get a ticket by ticket id */
-    public Ticket2 getTicket(UUID ticketId)
-    throws Exception
+    public Optional<Ticket2> getTicket(UUID ticketId)
     {
         Optional<Ticket2> foundticket=this.ticketRepository.findById(ticketId);
 
         if (!foundticket.isPresent())
         {
             System.out.println("could not find ticket: "+ticketId);
-            throw new Exception("could not find ticket");
+            return Optional.empty();
         }
 
-        return foundticket.get();
+        return foundticket;
     }
 
     /** return all tickets */
