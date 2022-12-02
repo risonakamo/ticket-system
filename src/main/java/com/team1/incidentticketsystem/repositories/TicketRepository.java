@@ -32,7 +32,7 @@ public interface TicketRepository extends CrudRepository<Ticket2,UUID>
     /** check if a user can access a ticket */
     @Query(
         value="""
-        select id from ticket2
+        select * from ticket2
         where
             (
                 creator_id = :employeeId
