@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "33dc33c9-9d8f-4179-97ce-dd6f5189f206",
+		"name": "ticket system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23798497"
+	},
+	"item": [
+		{
+			"name": "create 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "d8626223-f3d8-4458-bf31-2f3aa831cc06",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"test ticket 1\",\r\n    \"type\":\"INCIDENT_REPORT\",\r\n    \"impactedSystems\":[\r\n        \"server1\",\r\n        \"server2\"\r\n    ],\r\n    \"description\":\"not able to login\",\r\n    \"comments\":\"need to login to do things\",\r\n    \"userSeverity\":\"HIGH\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"create"
+					]
+				},
+				"description": "normal create ticket"
+			},
+			"response": []
+		},
+		{
+			"name": "create 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "6006f3bc-b62c-4c64-a0d2-4fabdb9495af",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"test ticket 2\",\r\n    \"type\":\"INCIDENT_REPORT\",\r\n    \"impactedSystems\":[\r\n        \"server3\"\r\n    ],\r\n    \"description\":\"password not working\",\r\n    \"comments\":\"\",\r\n    \"userSeverity\":\"CRITICAL\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"create"
+					]
+				},
+				"description": "normal create ticket"
+			},
+			"response": []
+		},
+		{
+			"name": "create 3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "6006f3bc-b62c-4c64-a0d2-4fabdb9495af",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"this is a ticket with no details\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"create"
+					]
+				},
+				"description": "create ticket with mostly empty body. check the database and it should still look ok, since most of the ticket fields should have default empty values"
+			},
+			"response": []
+		},
+		{
+			"name": "get single ticket 1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "3a5955f8-2cb8-4ea6-8f04-fd707ebf7876",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/tickets/1fc680c8-98ca-4db9-8a7a-5b3d79abb778",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"1fc680c8-98ca-4db9-8a7a-5b3d79abb778"
+					]
+				},
+				"description": "get single ticket as admin"
+			},
+			"response": []
+		},
+		{
+			"name": "get single ticket 2",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "6006f3bc-b62c-4c64-a0d2-4fabdb9495af",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/tickets/9c9251eb-50a6-4358-9c75-4406b07d9748",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"9c9251eb-50a6-4358-9c75-4406b07d9748"
+					]
+				},
+				"description": "get single ticket as creator of the ticket"
+			},
+			"response": []
+		},
+		{
+			"name": "get single ticket 3",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "48f51d8e-3d74-4d3a-9009-9986b8b754a7",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/tickets/6f01e829-e87a-4a50-ba44-cbb796ffc7c9",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"6f01e829-e87a-4a50-ba44-cbb796ffc7c9"
+					]
+				},
+				"description": "get single ticket as creator of the ticket"
+			},
+			"response": []
+		},
+		{
+			"name": "get single ticket invalid 1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "c69042d4-e9cb-4c2b-a045-a23fd99e77ae",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/tickets/not-real-id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"not-real-id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get single ticket invalid 2",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "c69042d4-e9cb-4c2b-a045-a23fd99e77ae",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/tickets/ac2d19de-3800-43bb-abd5-fa2a270d864f",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"ac2d19de-3800-43bb-abd5-fa2a270d864f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all tickets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/tickets/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update ticket 1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "3a5955f8-2cb8-4ea6-8f04-fd707ebf7876",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"6f01e829-e87a-4a50-ba44-cbb796ffc7c9\",\r\n    \"title\":\"new title\",\r\n    \"assignedEmployees\":[\r\n        \"48f51d8e-3d74-4d3a-9009-9986b8b754a7\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"update"
+					]
+				},
+				"description": "update a ticket as admin. should provide admin employee id"
+			},
+			"response": []
+		},
+		{
+			"name": "update ticket 2",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "6006f3bc-b62c-4c64-a0d2-4fabdb9495af",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"6f01e829-e87a-4a50-ba44-cbb796ffc7c9\",\r\n    \"opened\":false,\r\n    \"description\":\"new description\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"update"
+					]
+				},
+				"description": "update a ticket as a creator of the ticket. should enter a ticket id and the corresponding creator of the ticket id"
+			},
+			"response": []
+		},
+		{
+			"name": "update ticket 3",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "48f51d8e-3d74-4d3a-9009-9986b8b754a7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"6f01e829-e87a-4a50-ba44-cbb796ffc7c9\",\r\n    \"opened\":false,\r\n    \"description\":\"new description\",\r\n    \"comments\":\"edited as assigner\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"update"
+					]
+				},
+				"description": "update a ticket as a user that was assigned to the ticket\n\nmake sure selected ticket id has the selected user id assigned to the ticket"
+			},
+			"response": []
+		},
+		{
+			"name": "update ticket fail 1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "employee-id",
+						"value": "7088f8c2-848c-48f4-b74c-6b8cb2d6b94f",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"6f01e829-e87a-4a50-ba44-cbb796ffc7c9\",\r\n    \"title\":\"new title\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/tickets/update",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tickets",
+						"update"
+					]
+				},
+				"description": "fail to update a ticket because the user is not allowed to access the ticket\n\nmake sure to provide a ticket id and a user id where the user id did not create the ticket and is not assigned to it"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
