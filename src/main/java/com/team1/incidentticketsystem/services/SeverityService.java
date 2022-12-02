@@ -38,7 +38,7 @@ public class SeverityService
     Integer employeeLevelToMultiplier(Integer employeeLevel)
     {
         // level 1-3 have same multiplier
-        if (employeeLevel<=1)
+        if (employeeLevel<=3)
         {
             return 1;
         }

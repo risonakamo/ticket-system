@@ -14,6 +14,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+      .csrf().disable()
       .authorizeRequests()
       	.antMatchers("/admin").hasRole("ADMIN")  // for this endpoint only allow admin role
       	.antMatchers("/admin/**/*").hasRole("ADMINS")  // for this endpoint only allow admin role
@@ -35,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .passwordCompare()
           .passwordEncoder(new BCryptPasswordEncoder())
           .passwordAttribute("userPassword");
-    
+
   }
 
 }
