@@ -1,5 +1,6 @@
 package com.team1.incidentticketsystem.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,12 @@ public class Ticket
 
     public Ticket()
     {
-
+        this.title="";
+        this.type=TicketType.INCIDENT_REPORT;
+        this.impactedSystems=new ArrayList<>();
+        this.description="";
+        this.comments="";
+        this.userSeverity=UserSeverity.LOW;
     }
 
     /** create a ticket with all required fields */

@@ -16,6 +16,8 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
+import net.bytebuddy.implementation.bind.annotation.Super;
+
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.ObjectUtils.Null;
@@ -54,7 +56,14 @@ public class Ticket2 extends Ticket
 
     public Ticket2()
     {
-
+        super();
+        Date nowtime=new Date();
+        this.creationDate=nowtime;
+        this.lastUpdateTime=nowtime;
+        this.stepsTaken="";
+        this.severity=0;
+        this.status="created";
+        this.opened=true;
     }
 
     /** construct ticket2 from ticket1 */
