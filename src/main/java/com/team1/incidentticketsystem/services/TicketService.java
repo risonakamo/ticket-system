@@ -110,4 +110,34 @@ public class TicketService
 
         return new OwnedTickets(createdTickets,assignedTickets);
     }
+
+    /** return if specified user id can access ticket id. always true if admin, otherwise only
+     *  true if the user either created or is assigned to the target ticket */
+    public Boolean checkTicketAccess(UUID userId,UUID ticketId)
+    {
+        // try to find employee to check if admin
+        Optional<Employee> foundemployee=this.employeeRepository.findById(userId);
+
+        // if does not exist, reject
+        if (!foundemployee.isPresent())
+        {
+            System.out.print("rejected ticket access due to employee not existing");
+            return false;
+        }
+
+        // always return true if admin
+        if (foundemployee.get().isAdmin)
+        {
+            return true;
+        }
+
+        // otherwise, find if the ticket was created or was assigned to the user
+        List<Ticket2> foundtickets=this.ticketRepository.checkTicketAccess(
+            userId,
+            ticketId
+        );
+
+        // user is able to access the ticket as long as this is not empty
+        return !foundtickets.isEmpty();
+    }
 }

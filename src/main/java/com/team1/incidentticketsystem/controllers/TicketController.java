@@ -146,15 +146,26 @@ public class TicketController
         }
     }
 
-    /** try to get a single ticket. fail if could not find the ticket */
+    /** try to get a single ticket. fail if could not find the ticket. also, the user requesting the ticket
+     *  must be allowed to access the ticket */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTicket(@PathVariable String id)
+    public ResponseEntity<?> getTicket(
+        @PathVariable UUID id,
+        @RequestHeader("employee-id") UUID employeeId
+    )
     {
-        Optional<Ticket2> gotticket=this.ticketService.getTicket(UUID.fromString(id));
+        if (!this.ticketService.checkTicketAccess(employeeId,id))
+        {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("not allowed to access specified ticket");
+        }
+
+        Optional<Ticket2> gotticket=this.ticketService.getTicket(id);
 
         if (!gotticket.isPresent())
         {
-            ResponseEntity
+            return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("could not find ticket");
         }
