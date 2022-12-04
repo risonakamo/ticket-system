@@ -45,6 +45,17 @@ public class TicketController
     @Autowired
     TicketRepository ticketRepository;
 
+    @Autowired
+    UserAuthService userAuthService;
+
+    @GetMapping("/test")
+    public String test(Authentication auth)
+    {
+        this.userAuthService.parseAuth(auth);
+
+        return "tickettea";
+    }
+
     /** request to create a ticket. employee uid must be provided via auth or somehow.
      *  ensures the ticket is filled out with the creator id. calls ticket service to
      *  create the ticket and returns the id of the ticket when successful */

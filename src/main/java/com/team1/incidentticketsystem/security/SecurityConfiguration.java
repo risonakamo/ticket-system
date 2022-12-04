@@ -11,18 +11,17 @@ import org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .csrf().disable()
-      .authorizeRequests()
-      	.antMatchers("/admin").hasRole("ADMIN")  // for this endpoint only allow admin role
-      	.antMatchers("/admin/**/*").hasRole("ADMINS")  // for this endpoint only allow admin role
-		.antMatchers("/user/**").hasAnyRole("USER")
-		.anyRequest().permitAll()
-        .and()
-        .formLogin();
+    .csrf().disable()
+    .authorizeRequests()
+      .antMatchers("/admin").hasRole("ADMIN")  // for this endpoint only allow admin role
+      .antMatchers("/admin/**/*").hasRole("ADMINS")  // for this endpoint only allow admin role
+      .antMatchers("/user/**").hasAnyRole("USER")
+		  .anyRequest().permitAll()
+    .and()
+    .formLogin();
   }
 
   @Override
@@ -40,5 +39,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           .passwordAttribute("userPassword");
 
   }
-
 }
