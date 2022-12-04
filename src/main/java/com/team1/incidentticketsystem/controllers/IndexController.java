@@ -39,29 +39,29 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/")
 public class IndexController
 {
-	
+	@Autowired
+	UserAuthService userAuthService;
+
 	@GetMapping("/")
-	public String index(Authentication auth) {
-		UserAuthService authService = new UserAuthService();
-		String message;
-		message = authService.UserAuthService(auth);
-		return message;
-		
+	public String index(Authentication auth)
+	{
+		this.userAuthService.parseAuth(auth);
+		return "asdasd";
 	}
-	
+
 	@GetMapping("/user")
 	@ResponseBody
 	public String user(Authentication auth) {
 		return ("Welcome User");
 	}
-	
+
 	@GetMapping("/admin")
 	@ResponseBody
 	public String admin(Authentication auth) {
 		return ("Welcome Admin");
 	}
 }
-	
+
 //    @Autowired
 //    TicketRepository ticketRepository;
 //

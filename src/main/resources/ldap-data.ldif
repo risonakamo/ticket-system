@@ -21,7 +21,7 @@ givenName: Ben
 sn: Alex
 title: Senior Programmer
 telephoneNumber: +46 555-123456
-uid: ben
+uid: 3a5955f8-2cb8-4ea6-8f04-fd707ebf7876
 userPassword: $2a$10$c6bSeWPhg06xB1lvmaWNNe4NROmZiSpYhlocU/98HNr2MhIOiSt36
 
 dn: uid=dude,ou=people,dc=example,dc=com

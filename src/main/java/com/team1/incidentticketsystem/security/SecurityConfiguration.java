@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     auth
       .ldapAuthentication()
         .userDnPatterns("uid={0},ou=people")
+        .userDetailsContextMapper(new InetOrgPersonContextMapper())
         .groupSearchBase("ou=groups")
         .contextSource()
           .url("ldap://localhost:8389/dc=example,dc=com")
