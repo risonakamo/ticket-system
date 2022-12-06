@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -25,10 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.team1.incidentticketsystem.models.Employee;
+import com.team1.incidentticketsystem.models.EmployeeUserDetails;
 import com.team1.incidentticketsystem.models.Ticket;
 import com.team1.incidentticketsystem.models.Ticket2;
 import com.team1.incidentticketsystem.repositories.EmployeeRepository;
 import com.team1.incidentticketsystem.repositories.TicketRepository;
+import com.team1.incidentticketsystem.security.GetIdFromAuth;
 import com.team1.incidentticketsystem.services.TicketService;
 
 @RestController
@@ -56,10 +59,11 @@ public class TicketController
     @PostMapping("/create")
     public ResponseEntity<?> createTicket(
         @RequestBody Ticket createTicketBody,
-        @RequestHeader("employee-id") String employeeId
+        Authentication auth
     )
     {
-        UUID uid=UUID.fromString(employeeId);
+        UUID uid=GetIdFromAuth.getIdFromAuth(auth);
+
         createTicketBody.creatorId=uid;
         Optional<UUID> madeTicket=this.ticketService.createTicket(createTicketBody);
 
@@ -88,10 +92,12 @@ public class TicketController
     @PutMapping("/update")
     public ResponseEntity<?> updateTicket(
         @RequestBody Ticket2 updateRequest,
-        @RequestHeader("employee-id") UUID employeeId
+        Authentication auth
     )
     throws Exception
     {
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
+
         // fail if no target ticket id specified
         if (updateRequest.id==null)
         {
@@ -156,9 +162,11 @@ public class TicketController
     @GetMapping("/{id}")
     public ResponseEntity<?> getTicket(
         @PathVariable UUID id,
-        @RequestHeader("employee-id") UUID employeeId
+        Authentication auth
     )
     {
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
+
         if (!this.ticketService.checkTicketAccess(employeeId,id))
         {
             return ResponseEntity
@@ -180,19 +188,37 @@ public class TicketController
 
     /** get all tickets */
     @GetMapping("/")
-    public ResponseEntity<?> getAllTickets()
+    public ResponseEntity<?> getAllTickets(Authentication auth)
     {
         return ResponseEntity.ok(this.ticketService.getAllTickets());
     }
 
-	// @GetMapping("/get-owned")
-	// public ResponseEntity<?> getOwnedTickets()
+	// @GetMapping("/own-created")
+	// public ResponseEntity<?> getOwnCreated()
 	// {
 
 	// }
 
-	// @GetMapping("/get-owned/{id}")
-	// public ResponseEntity<?> getOwnedTicketsWithId(@PathVariable String id)
+	// @GetMapping("/own-assigned")
+	// public ResponseEntity<?> getOwnAssigned()
+	// {
+
+	// }
+
+	// @GetMapping("/created/{id}")
+	// public ResponseEntity<?> getCreatedById(
+    //     @PathVariable UUID id,
+    //     Authentication auth
+    // )
+	// {
+
+	// }
+
+	// @GetMapping("/assigned/{id}")
+	// public ResponseEntity<?> getAssignedById(
+    //     @PathVariable UUID id,
+    //     Authentication auth
+    // )
 	// {
 
 	// }

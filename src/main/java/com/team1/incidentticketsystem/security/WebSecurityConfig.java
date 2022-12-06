@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 	private final CustomAuthenticationProvider authProvider;
-	
+
 	public WebSecurityConfig(CustomAuthenticationProvider authProvider) {
 		this.authProvider = authProvider;
 	}
@@ -23,21 +23,22 @@ public class WebSecurityConfig {
 	AuthenticationManager authManager(HttpSecurity http) throws Exception {
 		AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
 		builder.authenticationProvider(authProvider);
-		
+
 		return builder.build();
 	}
-	
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+			.csrf().disable()
 			.formLogin()
 			.and()
 			.authorizeRequests()
 				.antMatchers("/login").permitAll()
-				.antMatchers("/tickets/**").hasAnyRole("ADMIN", "USER")
+				.antMatchers("/tickets/**").hasAnyRole("ADMIN","USER")
 				.anyRequest().permitAll();
-			
-		
+
+
 		return http.build();
 	}
 }

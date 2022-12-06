@@ -40,7 +40,7 @@ public class TestDataService
             "admin@admin.com",
             "online",
             true,
-            "foo",
+            "admin",
             encoder.encode("password"),
             "ADMIN"
         );
