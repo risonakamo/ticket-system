@@ -32,6 +32,8 @@ public class TicketService
     {
         Optional<Employee> gotEmployee=this.employeeRepository.findById(ticket.creatorId);
 
+        ticket.fillInFields();
+
         if (!gotEmployee.isPresent())
         {
             System.out.println(
@@ -48,6 +50,8 @@ public class TicketService
             ticket,
             this.severityService.computeSeverity(ticket,gotEmployee.get())
         );
+
+        newTicket.fillInFields();
 
         System.out.println("creating ticket");
         this.ticketRepository.save(newTicket);

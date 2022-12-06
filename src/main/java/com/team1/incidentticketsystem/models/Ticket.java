@@ -31,12 +31,7 @@ public class Ticket
 
     public Ticket()
     {
-        this.title="";
-        this.type=TicketType.INCIDENT_REPORT;
-        this.impactedSystems=new ArrayList<>();
-        this.description="";
-        this.comments="";
-        this.userSeverity=UserSeverity.LOW;
+
     }
 
     /** create a ticket with all required fields */
@@ -57,5 +52,39 @@ public class Ticket
         this.description=description;
         this.comments=comments;
         this.userSeverity=severity;
+    }
+
+    /** fill in fields of ticket if missing */
+    public void fillInFields()
+    {
+        if (this.title==null)
+        {
+            this.title="";
+        }
+
+        if (this.type==null)
+        {
+            this.type=TicketType.INCIDENT_REPORT;
+        }
+
+        if (this.impactedSystems==null)
+        {
+            this.impactedSystems=new ArrayList<>();
+        }
+
+        if (this.description==null)
+        {
+            this.description="";
+        }
+
+        if (this.comments==null)
+        {
+            this.comments="";
+        }
+
+        if (this.userSeverity==null)
+        {
+            this.userSeverity=UserSeverity.LOW;
+        }
     }
 }

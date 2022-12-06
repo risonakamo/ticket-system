@@ -56,13 +56,6 @@ public class Ticket2 extends Ticket
     public Ticket2()
     {
         super();
-        Date nowtime=new Date();
-        this.creationDate=nowtime;
-        this.lastUpdateTime=nowtime;
-        this.stepsTaken="";
-        this.severity=0;
-        this.status="created";
-        this.opened=true;
     }
 
     /** construct ticket2 from ticket1 */
@@ -93,9 +86,12 @@ public class Ticket2 extends Ticket
     }
 
     /** update this ticket with another. only certain fields can be changed, unless provide
-     *  admin setting, or assigned employees setting, which allows more fields to be changed. */
+     *  admin setting, or assigned employees setting, which allows more fields to be changed.
+     *  update time field will always be updated to the current time, even if nothing changed */
     public void update(Ticket2 ticket,Boolean admin,Boolean assignedEmployee)
     {
+        this.lastUpdateTime=new Date();
+
         if (ticket.title!=null)
         {
             this.title=ticket.title;
@@ -139,11 +135,6 @@ public class Ticket2 extends Ticket
                 this.opened=ticket.opened;
             }
 
-            if (ticket.lastUpdateTime!=null)
-            {
-                this.lastUpdateTime=ticket.lastUpdateTime;
-            }
-
             if (ticket.stepsTaken!=null)
             {
                 this.stepsTaken=ticket.stepsTaken;
@@ -172,6 +163,42 @@ public class Ticket2 extends Ticket
             {
                 this.creationDate=ticket.creationDate;
             }
+        }
+    }
+
+    /** fill in any missing fields */
+    public void fillInFields()
+    {
+        Date nowtime=new Date();
+
+        if (this.creationDate==null)
+        {
+            this.creationDate=nowtime;
+        }
+
+        if (this.lastUpdateTime==null)
+        {
+            this.lastUpdateTime=nowtime;
+        }
+
+        if (this.stepsTaken==null)
+        {
+            this.stepsTaken="";
+        }
+
+        if (this.severity==null)
+        {
+            this.severity=0;
+        }
+
+        if (this.status==null)
+        {
+            this.status="created";
+        }
+
+        if (this.opened==null)
+        {
+            this.opened=true;
         }
     }
 
