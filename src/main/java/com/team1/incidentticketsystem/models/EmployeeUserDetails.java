@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @SuppressWarnings("serial")
 public class EmployeeUserDetails implements UserDetails {
 	public UUID id;
+
+	
 	private String userName;
 	private String password;
 	private boolean active;
