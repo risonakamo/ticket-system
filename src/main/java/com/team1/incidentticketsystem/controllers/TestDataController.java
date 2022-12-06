@@ -1,4 +1,5 @@
-package com.team1.incidentticketsystem.controllers;
+/*
+ * package com.team1.incidentticketsystem.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,3 +25,4 @@ public class TestDataController
         return ResponseEntity.ok("made employees");
     }
 }
+*/

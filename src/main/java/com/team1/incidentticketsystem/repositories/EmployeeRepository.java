@@ -13,4 +13,5 @@ import com.team1.incidentticketsystem.models.Employee;
 public interface EmployeeRepository extends CrudRepository<Employee,UUID>
 {
     Optional<List<Employee>> findByEmail(String email);
+    Optional<Employee> findByUsername(String username);
 }
