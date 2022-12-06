@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 
+import java.lang.StackWalker.Option;
 import java.util.HashMap;
 import java.util.List;
 
@@ -190,36 +191,92 @@ public class TicketController
     @GetMapping("/")
     public ResponseEntity<?> getAllTickets(Authentication auth)
     {
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
+
+        Optional<ResponseEntity<String>> adminCheckResult=this.adminCheck(employeeId);
+
+        if (adminCheckResult.isPresent())
+        {
+            return adminCheckResult.get();
+        }
+
         return ResponseEntity.ok(this.ticketService.getAllTickets());
     }
 
-	// @GetMapping("/own-created")
-	// public ResponseEntity<?> getOwnCreated()
-	// {
+    /** get all tickets that were created by the person calling this route */
+	@GetMapping("/own-created")
+	public ResponseEntity<?> getOwnCreated(Authentication auth)
+	{
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
 
-	// }
+        return ResponseEntity.ok(this.ticketRepository.findByCreatorId(employeeId));
+	}
 
-	// @GetMapping("/own-assigned")
-	// public ResponseEntity<?> getOwnAssigned()
-	// {
+    /** get all tickets that were assigned to the person calling this route */
+	@GetMapping("/own-assigned")
+	public ResponseEntity<?> getOwnAssigned(Authentication auth)
+	{
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
 
-	// }
+        return ResponseEntity.ok(this.ticketRepository.findAssignedTickets(employeeId));
+	}
 
-	// @GetMapping("/created/{id}")
-	// public ResponseEntity<?> getCreatedById(
-    //     @PathVariable UUID id,
-    //     Authentication auth
-    // )
-	// {
+    /** get all tickets created by target id. only usable by admin */
+	@GetMapping("/created/{id}")
+	public ResponseEntity<?> getCreatedById(
+        @PathVariable UUID id,
+        Authentication auth
+    )
+	{
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
 
-	// }
+        Optional<ResponseEntity<String>> adminCheckResult=this.adminCheck(employeeId);
 
-	// @GetMapping("/assigned/{id}")
-	// public ResponseEntity<?> getAssignedById(
-    //     @PathVariable UUID id,
-    //     Authentication auth
-    // )
-	// {
+        if (adminCheckResult.isPresent())
+        {
+            return adminCheckResult.get();
+        }
 
-	// }
+        return ResponseEntity.ok(this.ticketRepository.findByCreatorId(id));
+	}
+
+	@GetMapping("/assigned/{id}")
+	public ResponseEntity<?> getAssignedById(
+        @PathVariable UUID id,
+        Authentication auth
+    )
+	{
+        UUID employeeId=GetIdFromAuth.getIdFromAuth(auth);
+
+        Optional<ResponseEntity<String>> adminCheckResult=this.adminCheck(employeeId);
+
+        if (adminCheckResult.isPresent())
+        {
+            return adminCheckResult.get();
+        }
+
+        return ResponseEntity.ok(this.ticketRepository.findAssignedTickets(id));
+	}
+
+    /** check if employee is admin. returns empty if all clear. if error occured, returns an http status */
+    private Optional<ResponseEntity<String>> adminCheck(UUID employeeId)
+    {
+        Optional<Employee> foundemployee=this.employeeRepository.findById(employeeId);
+
+        if (!foundemployee.isPresent())
+        {
+            return Optional.of(ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("failed to find employee id"));
+        }
+
+        if (!foundemployee.get().isAdmin)
+        {
+            return Optional.of(ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("can only be accessed by admin"));
+        }
+
+        return Optional.empty();
+    }
 }
