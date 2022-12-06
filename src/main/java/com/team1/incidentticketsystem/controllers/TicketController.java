@@ -191,15 +191,15 @@ public class TicketController
         return ResponseEntity.ok(this.ticketService.getAllTickets());
     }
 
-    // @GetMapping("/get-owned")
-    // public ResponseEntity<?> getOwnedTickets()
-    // {
+	// @GetMapping("/get-owned")
+	// public ResponseEntity<?> getOwnedTickets()
+	// {
 
-    // }
+	// }
 
-    // @GetMapping("/get-owned/{id}")
-    // public ResponseEntity<?> getOwnedTicketsWithId(@PathVariable String id)
-    // {
+	// @GetMapping("/get-owned/{id}")
+	// public ResponseEntity<?> getOwnedTicketsWithId(@PathVariable String id)
+	// {
 
-    // }
+	// }
 }

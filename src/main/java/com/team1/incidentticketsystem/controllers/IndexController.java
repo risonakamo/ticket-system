@@ -1,78 +1,50 @@
 package com.team1.incidentticketsystem.controllers;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
-import com.team1.incidentticketsystem.security.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ldap.NamingException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.ldap.userdetails.LdapUserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
-import com.github.javafaker.Faker;
-import com.team1.incidentticketsystem.models.Employee;
-import com.team1.incidentticketsystem.models.Ticket;
-import com.team1.incidentticketsystem.models.Ticket2;
-import com.team1.incidentticketsystem.models.TicketType;
-import com.team1.incidentticketsystem.models.UserSeverity;
+import com.team1.incidentticketsystem.models.EmployeeUserDetails;
 import com.team1.incidentticketsystem.repositories.EmployeeRepository;
 import com.team1.incidentticketsystem.repositories.TicketRepository;
 import com.team1.incidentticketsystem.services.TicketService;
-
-import java.util.List;
-import java.util.UUID;
-
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/")
 public class IndexController
 {
-	@Autowired
-	UserAuthService userAuthService;
+    @Autowired
+    TicketRepository ticketRepository;
 
-	@GetMapping("/")
-	public String index(Authentication auth)
-	{
-		this.userAuthService.parseAuth(auth);
-		return "asdasd";
-	}
+    @Autowired
+    EmployeeRepository employeeRepository;
 
-	@GetMapping("/user")
-	@ResponseBody
-	public String user(Authentication auth) {
-		return ("Welcome User");
-	}
+    @Autowired
+    TicketService ticketService;
 
-	@GetMapping("/admin")
-	@ResponseBody
-	public String admin(Authentication auth) {
-		return ("Welcome Admin");
-	}
-}
+    @GetMapping
+    public ResponseEntity<String> showHome(Authentication auth) {
+    	Object principal = auth.getPrincipal();
 
-//    @Autowired
-//    TicketRepository ticketRepository;
-//
-//    @Autowired
-//    EmployeeRepository employeeRepository;
-//
-//    @Autowired
-//    TicketService ticketService;
-//
+    	String response = "Hello World";
+
+    	if(principal instanceof EmployeeUserDetails) {
+    		EmployeeUserDetails userDetails = (EmployeeUserDetails) principal;
+    		response += ": id = " + userDetails.getId() + "\n";
+    		response += "authorities = " + Arrays.toString(userDetails.getAuthorities().toArray());
+    	}
+
+    	return ResponseEntity.ok(response);
+    }
+
 //    @GetMapping("/")
-//    public ResponseEntity<String> index(@RequestAttribute("huh") String thing)
+//    public ResponseEntity<String> index(
+//    		@RequestAttribute("huh") String thing)
 //    {
 //        System.out.println("got arg "+thing);
 //
@@ -97,4 +69,4 @@ public class IndexController
 //        System.out.println("got param: "+testparam);
 //        return ResponseEntity.ok("hello2");
 //    }
-//}
+}

@@ -1,9 +1,8 @@
-package com.team1.incidentticketsystem.services;
+/* package com.team1.incidentticketsystem.services;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.ldap.userdetails.LdapUserDetails;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
@@ -17,7 +16,7 @@ public class TestDataService
     @Autowired
     EmployeeRepository employeeRepository;
 
-        /** create admin employee. does nothing if already exists */
+    // create admin employee. does nothing if already exists
     public void addAdmin()
     {
         Optional<List<Employee>> foundadmin=this.employeeRepository.findByEmail(
@@ -37,13 +36,14 @@ public class TestDataService
             "admin@admin.com",
             "online",
             true,
+            "foo",
             "admin"
         );
 
         this.employeeRepository.save(admin);
     }
 
-    /** create random employees */
+    //create random employees 
     public void createEmployees(Integer amount)
     {
         Faker faker=new Faker();
@@ -57,6 +57,7 @@ public class TestDataService
                 faker.internet().emailAddress(),
                 faker.address().fullAddress(),
                 false,
+                faker.name().username(),
                 faker.internet().password()
             );
 
@@ -64,3 +65,4 @@ public class TestDataService
         }
     }
 }
+*/

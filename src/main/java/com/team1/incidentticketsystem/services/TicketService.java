@@ -1,10 +1,8 @@
 package com.team1.incidentticketsystem.services;
 
-import java.lang.StackWalker.Option;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,6 @@ import com.team1.incidentticketsystem.models.Ticket;
 import com.team1.incidentticketsystem.models.Ticket2;
 import com.team1.incidentticketsystem.repositories.EmployeeRepository;
 import com.team1.incidentticketsystem.repositories.TicketRepository;
-import com.team1.incidentticketsystem.models.OwnedTickets;
 
 @Component
 public class TicketService
