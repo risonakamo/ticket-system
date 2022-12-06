@@ -29,7 +29,6 @@ import com.team1.incidentticketsystem.models.Ticket;
 import com.team1.incidentticketsystem.models.Ticket2;
 import com.team1.incidentticketsystem.repositories.EmployeeRepository;
 import com.team1.incidentticketsystem.repositories.TicketRepository;
-import com.team1.incidentticketsystem.security.UserAuthService;
 import com.team1.incidentticketsystem.services.TicketService;
 
 @RestController
@@ -45,14 +44,9 @@ public class TicketController
     @Autowired
     TicketRepository ticketRepository;
 
-    @Autowired
-    UserAuthService userAuthService;
-
     @GetMapping("/test")
     public String test(Authentication auth)
     {
-        this.userAuthService.parseAuth(auth);
-
         return "tickettea";
     }
 
