@@ -1,8 +1,10 @@
-/* package com.team1.incidentticketsystem.services;
+package com.team1.incidentticketsystem.services;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
@@ -28,6 +30,8 @@ public class TestDataService
             return;
         }
 
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
+
         Employee admin=new Employee(
             "admin",
             "person",
@@ -37,16 +41,20 @@ public class TestDataService
             "online",
             true,
             "foo",
-            "admin"
+            encoder.encode("password"),
+            "ADMIN"
         );
 
         this.employeeRepository.save(admin);
     }
 
-    //create random employees 
+    //create random employees
     public void createEmployees(Integer amount)
     {
         Faker faker=new Faker();
+
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
+
         for (int i=0;i<amount;i++)
         {
             Employee employee=new Employee(
@@ -58,11 +66,11 @@ public class TestDataService
                 faker.address().fullAddress(),
                 false,
                 faker.name().username(),
-                faker.internet().password()
+                encoder.encode("password"),
+                "USER"
             );
 
             this.employeeRepository.save(employee);
         }
     }
 }
-*/
