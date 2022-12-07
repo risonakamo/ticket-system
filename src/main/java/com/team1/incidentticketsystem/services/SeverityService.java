@@ -2,6 +2,8 @@ package com.team1.incidentticketsystem.services;
 
 import com.team1.incidentticketsystem.models.UserSeverity;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.team1.incidentticketsystem.models.Employee;
@@ -15,16 +17,18 @@ public class SeverityService
      *  calculation function */
     public Integer computeSeverity(Ticket ticket,Employee creator)
     {
-        return this.employeeLevelScaledSeverity(ticket,creator);
+        return this.scaledSeverity(ticket,creator);
         // return this.nonScaledSeverity(ticket,creator);
     }
 
-    /** compute a severity based on employee level and the given user severity */
-    Integer employeeLevelScaledSeverity(Ticket ticket,Employee creator)
+    /** compute severity based on scaling functions */
+    Integer scaledSeverity(Ticket ticket,Employee creator)
     {
-        return (
+        return (int) Math.round(
             this.userSeverityToInt(ticket.userSeverity)
             *this.employeeLevelToMultiplier(creator.jobLevel)
+            *this.locationSeverityScale(creator.location)
+            *this.impactedSystemsScaleMultiple(ticket.impactedSystems)
         );
     }
 
@@ -79,5 +83,53 @@ public class SeverityService
 
         System.out.println("unknown severity: "+userSeverity.toString());
         return 0;
+    }
+
+    /** return multiplier based on location */
+    double locationSeverityScale(String location)
+    {
+        switch (location)
+        {
+            case "HQ":
+            case "main server":
+            case "root server":
+            return 10;
+
+            case "cdn server":
+            return .5;
+
+            case "bob's server":
+            return -1;
+        }
+
+        return 1;
+    }
+
+    /** return multiplier for impacted systems */
+    double impactedSystemsScale(String system)
+    {
+        switch (system)
+        {
+            case "server0":
+            return 2;
+
+            case "cdn server":
+            return .5;
+        }
+
+        return 1;
+    }
+
+    /** calculate total multiplier for all systems impacted */
+    double impactedSystemsScaleMultiple(List<String> systems)
+    {
+        double totalMultiplier=0;
+
+        for (String system:systems)
+        {
+            totalMultiplier+=this.impactedSystemsScale(system);
+        }
+
+        return totalMultiplier;
     }
 }
