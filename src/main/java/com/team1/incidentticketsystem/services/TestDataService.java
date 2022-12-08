@@ -42,7 +42,7 @@ public class TestDataService
             true,
             "admin",
             encoder.encode("password"),
-            "ADMIN"
+            "ROLE_ADMIN"
         );
 
         this.employeeRepository.save(admin);
@@ -67,7 +67,7 @@ public class TestDataService
                 false,
                 faker.name().username(),
                 encoder.encode("password"),
-                "USER"
+                "ROLE_USER"
             );
 
             this.employeeRepository.save(employee);

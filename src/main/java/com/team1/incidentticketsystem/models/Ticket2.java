@@ -67,7 +67,7 @@ public class Ticket2 extends Ticket
         this.type=ticket.type;
         this.impactedSystems=ticket.impactedSystems;
         this.description=ticket.description;
-        this.comments=ticket.description;
+        this.comments=ticket.comments;
         this.userSeverity=ticket.userSeverity;
 
         // use defaults for the remaining values
