@@ -30,6 +30,8 @@ paths:
                 type: string
         403:
           $ref: "#/components/responses/UserUnauthorised"
+        500:
+          description: Internal server error, failed to create ticket for some reason.
 
   /tickets/update:
     put:
@@ -57,6 +59,8 @@ paths:
                 type: string
         403:
           $ref: "#/components/responses/UserUnauthorised"
+        400:
+          description: Bad request. Failed to provide enough information to update ticket
 
   /tickets/{id}:
     get:
@@ -83,6 +87,8 @@ paths:
                 $ref: "#/components/schemas/Ticket2"
         403:
           $ref: "#/components/responses/UserUnauthorised"
+        500:
+          description: Internal server error. Failed to find ticket.
 
   /tickets:
     get:
@@ -100,7 +106,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Ticket2"
-        401:
+        403:
           $ref: "#/components/responses/UserUnauthorised"
 
   /tickets/own-created:
