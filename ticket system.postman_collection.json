@@ -33,7 +33,7 @@
 								"create"
 							]
 						},
-						"description": "normal create ticket"
+						"description": "normal create ticket\n\nautomatically sets creation time\n\ncreator id of ticket is set to the id of the user who is logged in (creator id ignored in ticket details)"
 					},
 					"response": []
 				},
@@ -100,7 +100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"test ticket 4\",\r\n    \"type\":\"MAINTENANCE\",\r\n    \"impactedSystems\":[\r\n        \"main server\"\r\n    ],\r\n    \"description\":\"ticket that affects high priority server\",\r\n    \"userSeverity\":\"NORMAL\"\r\n}",
+							"raw": "{\r\n    \"title\":\"test ticket 4\",\r\n    \"type\":\"MAINTENANCE\",\r\n    \"impactedSystems\":[\r\n        \"main server\"\r\n    ],\r\n    \"description\":\"ticket that affects high priority server\",\r\n    \"userSeverity\":\"NORMAL\",\r\n    \"severity\":100000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -117,7 +117,7 @@
 								"create"
 							]
 						},
-						"description": "normal create ticket"
+						"description": "normal create ticket\n\nsome fields cannot be set at creation time because they are auto generated"
 					},
 					"response": []
 				},
@@ -127,13 +127,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/tickets/e9026228-2932-4b8e-9ff5-d7f3ed1b4a34",
+							"raw": "{{base_url}}/tickets/4a815eb1-d35c-4c11-bbf1-33a9d3123d28",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tickets",
-								"e9026228-2932-4b8e-9ff5-d7f3ed1b4a34"
+								"4a815eb1-d35c-4c11-bbf1-33a9d3123d28"
 							]
 						},
 						"description": "get single ticket. make sure to enter in the ticket id to be a valid one"
@@ -160,7 +160,8 @@
 								"tickets",
 								"not-real-id"
 							]
-						}
+						},
+						"description": "400 error because spring data validation caught the id url parameter as not a uuid"
 					},
 					"response": []
 				},
@@ -184,7 +185,8 @@
 								"tickets",
 								"ac2d19de-3800-43bb-abd5-fa2a270d864f"
 							]
-						}
+						},
+						"description": "500 internal server error because we were able to read the ticket uuid but could not find it in the database"
 					},
 					"response": []
 				},
@@ -219,7 +221,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"978b69f9-19f7-4f77-8801-bb482b8a8d9e\",\r\n    \"title\":\"new title for ticket 1\",\r\n    \"assignedEmployees\":[\r\n        \"046871e0-5673-4fea-9458-a0ad911fce74\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\":\"980bd3da-7ab6-4e07-a12c-c460bc9f3966\",\r\n    \"title\":\"new title for ticket 1\",\r\n    \"assignedEmployees\":[\r\n        \"fa3fe920-dafb-45dc-b4e7-54694678bae9\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -236,7 +238,7 @@
 								"update"
 							]
 						},
-						"description": "update a ticket as admin. should provide admin employee id"
+						"description": "update a ticket as admin\n\nadmin can assign tickets to employees\n\nupdate time properly updates"
 					},
 					"response": []
 				},
@@ -253,7 +255,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"e9026228-2932-4b8e-9ff5-d7f3ed1b4a34\",\r\n    \"opened\":false,\r\n    \"description\":\"again new description\",\r\n    \"severity\":1000\r\n}",
+							"raw": "{\r\n    \"id\":\"4a815eb1-d35c-4c11-bbf1-33a9d3123d28\",\r\n    \"opened\":false,\r\n    \"status\":\"completed\",\r\n    \"description\":\"again new description\",\r\n    \"severity\":1000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -270,7 +272,7 @@
 								"update"
 							]
 						},
-						"description": "update a ticket as a creator of the ticket. should enter a ticket id and the corresponding creator of the ticket id"
+						"description": "admin can update any fields such as severity and opened status"
 					},
 					"response": []
 				},
@@ -304,7 +306,7 @@
 								"update"
 							]
 						},
-						"description": "fail to update a ticket because the user is not allowed to access the ticket\n\nmake sure to provide a ticket id and a user id where the user id did not create the ticket and is not assigned to it"
+						"description": "failed to update ticket because the target ticket doesnt exist"
 					},
 					"response": []
 				},
@@ -350,13 +352,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/tickets/assigned/9c9accef-7ce9-493e-b48b-288875cf5a22",
+							"raw": "{{base_url}}/tickets/created/9c9accef-7ce9-493e-b48b-288875cf5a22",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tickets",
-								"assigned",
+								"created",
 								"9c9accef-7ce9-493e-b48b-288875cf5a22"
 							]
 						}
@@ -369,14 +371,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/tickets/assigned/046871e0-5673-4fea-9458-a0ad911fce74",
+							"raw": "{{base_url}}/tickets/assigned/fa3fe920-dafb-45dc-b4e7-54694678bae9",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tickets",
 								"assigned",
-								"046871e0-5673-4fea-9458-a0ad911fce74"
+								"fa3fe920-dafb-45dc-b4e7-54694678bae9"
 							]
 						}
 					},
@@ -506,16 +508,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/tickets/69e333e2-b143-4819-996e-2b9917413ceb",
+							"raw": "{{base_url}}/tickets/9cac9d57-b981-4d61-943e-39c1d6d2b898",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tickets",
-								"69e333e2-b143-4819-996e-2b9917413ceb"
+								"9cac9d57-b981-4d61-943e-39c1d6d2b898"
 							]
 						},
-						"description": "get single ticket. make sure to enter in the ticket id to be a valid one"
+						"description": "user is able to get a ticket that they made"
 					},
 					"response": []
 				},
@@ -525,16 +527,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/tickets/17688005-f50b-4ad5-9311-5de4c4ea3a52",
+							"raw": "{{base_url}}/tickets/17abb93c-cf54-4bd4-816e-a80c7cd70388",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tickets",
-								"17688005-f50b-4ad5-9311-5de4c4ea3a52"
+								"17abb93c-cf54-4bd4-816e-a80c7cd70388"
 							]
 						},
-						"description": "get single ticket. make sure to enter in the ticket id to be a valid one"
+						"description": "user can't get ticket because they didn't make it (made by admin previously)"
 					},
 					"response": []
 				},
@@ -569,7 +571,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"69e333e2-b143-4819-996e-2b9917413ceb\",\r\n    \"title\":\"new title for ticket 1 set by user\",\r\n    \"assignedEmployees\":[\r\n        \"046871e0-5673-4fea-9458-a0ad911fce74\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\":\"9cac9d57-b981-4d61-943e-39c1d6d2b898\",\r\n    \"title\":\"new title for ticket 1 set by user\",\r\n    \"description\":\"new description from user\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -586,7 +588,75 @@
 								"update"
 							]
 						},
-						"description": "update a ticket as admin. should provide admin employee id"
+						"description": "user updating a ticket that they created\n\nupdate time properly updates"
+					},
+					"response": []
+				},
+				{
+					"name": "update ticket 2",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "employee-id",
+								"value": "3a5955f8-2cb8-4ea6-8f04-fd707ebf7876",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"9cac9d57-b981-4d61-943e-39c1d6d2b898\",\r\n    \"title\":\"new title for ticket 1 set by user again\",\r\n    \"severity\":2000,\r\n    \"opened\":false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tickets/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tickets",
+								"update"
+							]
+						},
+						"description": "user updating ticket that they created, but user can't edit some fields (attempted change will be ignored)"
+					},
+					"response": []
+				},
+				{
+					"name": "update ticket 3",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "employee-id",
+								"value": "3a5955f8-2cb8-4ea6-8f04-fd707ebf7876",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"980bd3da-7ab6-4e07-a12c-c460bc9f3966\",\r\n    \"title\":\"new title from user assigned to ticket\",\r\n    \"description\":\"new description\",\r\n    \"opened\":false,\r\n    \"status\":\"completed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tickets/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tickets",
+								"update"
+							]
+						},
+						"description": "user editing ticket that was assigned to them (ticket originally created by admin). now they are able to update more fields than before for this particular ticket"
 					},
 					"response": []
 				},
@@ -604,7 +674,8 @@
 								"tickets",
 								"own-created"
 							]
-						}
+						},
+						"description": "user can get their own created tickets\n\ncreator id of ticket matches the user's id"
 					},
 					"response": []
 				},
@@ -622,7 +693,8 @@
 								"tickets",
 								"own-assigned"
 							]
-						}
+						},
+						"description": "user can get tickets that was assigned to them\n\ncan see creator id is the admin's id and the user's id is in the list of assigned employees"
 					},
 					"response": []
 				},
@@ -661,6 +733,34 @@
 								"046871e0-5673-4fea-9458-a0ad911fce74"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "severity calculation 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"test ticket 1 from user\",\r\n    \"type\":\"INCIDENT_REPORT\",\r\n    \"impactedSystems\":[\r\n        \"server4\",\r\n        \"server32\"\r\n    ],\r\n    \"description\":\"description of ticket 1 from user\",\r\n    \"comments\":\"a user made this\",\r\n    \"userSeverity\":\"NORMAL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tickets/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tickets",
+								"create"
+							]
+						},
+						"description": "normal create ticket"
 					},
 					"response": []
 				}
