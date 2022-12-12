@@ -51,7 +51,7 @@ paths:
             schema:
               $ref: "#/components/schemas/Ticket2"
       responses:
-        201:
+        200:
           description: Successfully updated ticket.
           content:
             text/plain:
@@ -79,8 +79,7 @@ paths:
       responses:
         200:
           description: >
-            Successfully retrieved ticket. Returns the ticket. Depending on authentication provided,
-            only certain fields of the returned ticket will be visible.
+            Successfully retrieved ticket.
           content:
             application/json:
               schema:
@@ -99,7 +98,7 @@ paths:
       responses:
         200:
           description: >
-            Successfully got all tickets. Returns all tickets in a list.
+            List of tickets.
           content:
             application/json:
               schema:
